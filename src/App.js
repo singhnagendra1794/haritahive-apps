@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Learn from './Learn';
+import Projects from './Projects'; // Make sure this import is here
 
 // Fix Leaflet icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -24,7 +25,7 @@ const Map = () => {
     return () => map.remove();
   }, []);
 
-  return <div id="map" ref={mapRef} className="w-full"></div>;
+  return <div id="map" ref={mapRef} className="w-full h-96"></div>;
 };
 
 const Home = () => (
@@ -34,6 +35,27 @@ const Home = () => (
     <div className="mb-4">
       <h3 className="text-xl font-semibold">Explore a Map</h3>
       <Map />
+    </div>
+    {/* Created By Section */}
+    <div className="mb-4">
+      <p className="text-lg">
+        Created By:{' '}
+        <a
+          href="https://www.linkedin.com/in/singhnagendra1/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          Nagendra Singh
+        </a>
+      </p>
+    </div>
+    {/* About Me Section */}
+    <div className="mb-4">
+      <h3 className="text-xl font-semibold mb-2">About Me</h3>
+      <p className="text-lg">
+        Head of Geospatial | Cloud GIS & Big Data | AI/ML for Geospatial Analytics | Climate & ESG Analytics | Python, GEE | Location Intelligence | Remote Sensing | Helping simplify spatial data for everyone
+      </p>
     </div>
   </div>
 );
@@ -47,12 +69,16 @@ const App = () => (
           <ul className="flex space-x-4">
             <li><Link to="/" className="text-white hover:text-gray-200">Home</Link></li>
             <li><Link to="/learn" className="text-white hover:text-gray-200">Learn</Link></li>
+            <li><Link to="/projects" className="text-white hover:text-gray-200">Projects</Link></li>
           </ul>
         </div>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/projects" element={<Projects />} /> {/* Make sure this route is here */}
+        {/* Optional: Add a catch-all route for unmatched paths */}
+        <Route path="*" element={<div className="container mx-auto p-4">Page Not Found</div>} />
       </Routes>
     </div>
   </Router>

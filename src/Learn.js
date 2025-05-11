@@ -7,14 +7,15 @@ const Learn = () => (
 
     {/* Embedded YouTube Video */}
     <div className="mb-8">
-      <h3 className="text-xl font-semibold mb-2">Video: Introduction to GIS</h3>
+      <h3 className="text-xl font-semibold mb-2">Video: How to Install QGIS, Python and Anaconda Distribution</h3>
       <div className="relative" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
         <iframe
           className="absolute top-0 left-0 w-full h-full"
           src="https://www.youtube.com/embed/3w308TTUVco?si=4uRQW73pnUiPMOaR"
-          title="YouTube video player"
+          title="How to Install QGIS, Python and Anaconda Distribution"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         ></iframe>
       </div>
