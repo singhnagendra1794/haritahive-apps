@@ -11,10 +11,10 @@ const Learn = () => (
       <div className="relative" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
         <iframe
           className="absolute top-0 left-0 w-full h-full"
-          src="https://www.youtube.com/embed/6EdK0r8r4lw"
-          title="Introduction to GIS"
+          src="https://www.youtube.com/embed/3w308TTUVco?si=4uRQW73pnUiPMOaR"
+          title="YouTube video player"
           frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
         ></iframe>
       </div>
