@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useAuth } from './AuthContext';
 
-// Fix Leaflet icon issue (same as in App.js)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -15,9 +15,9 @@ const Projects = () => {
   const [distance, setDistance] = useState(null);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const { subscription } = useAuth();
 
   useEffect(() => {
-    // Initialize the map only if it hasn't been initialized yet
     if (!mapInstanceRef.current) {
       const map = L.map(mapRef.current, {
         center: [51.505, -0.09],
@@ -28,12 +28,10 @@ const Projects = () => {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      // Store map instance in ref
       mapInstanceRef.current = map;
 
-      // Add click event to add markers
       map.on('click', (e) => {
-        if (markers.length < 2) { // Limit to 2 markers
+        if (markers.length < 2) {
           const newMarker = { lat: e.latlng.lat, lng: e.latlng.lng };
           setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
           L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
@@ -43,33 +41,29 @@ const Projects = () => {
       });
     }
 
-    // Cleanup on unmount
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
-  }, []); // Empty dependency array to run only once on mount
+  }, []);
 
-  // Calculate distance between two markers
   const calculateDistance = () => {
     if (markers.length === 2) {
       const latlng1 = L.latLng(markers[0].lat, markers[0].lng);
       const latlng2 = L.latLng(markers[1].lat, markers[1].lng);
-      const distanceInMeters = latlng1.distanceTo(latlng2); // Distance in meters
-      const distanceInKm = (distanceInMeters / 1000).toFixed(2); // Convert to kilometers, round to 2 decimals
+      const distanceInMeters = latlng1.distanceTo(latlng2);
+      const distanceInKm = (distanceInMeters / 1000).toFixed(2);
       setDistance(distanceInKm);
     } else {
       alert('Please add exactly 2 markers to calculate the distance.');
     }
   };
 
-  // Clear markers and reset distance
   const clearMarkers = () => {
     setMarkers([]);
     setDistance(null);
-    // Remove existing markers from the map
     if (mapInstanceRef.current) {
       mapInstanceRef.current.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
@@ -79,22 +73,29 @@ const Projects = () => {
     }
   };
 
+  const isPremium = subscription && subscription.status === 'active';
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-3xl font-bold mb-4">Create Your Map Projects</h2>
       <p className="text-lg mb-4">
-        Click on the map to add up to 2 markers, then calculate the distance between them!
+        Click on the map to add up to 2 markers, then calculate the distance between them! (Distance calculation requires a premium subscription.)
       </p>
       <div
         id="projectMap"
         ref={mapRef}
-        style={{ height: '400px', width: '100%' }} // Explicit height and width
+        style={{ height: '400px', width: '100%' }}
         className="mb-4 border border-gray-300"
       ></div>
       <div className="mb-4">
         <button
           onClick={calculateDistance}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+          disabled={!isPremium}
+          className={`px-4 py-2 rounded text-white mr-2 ${
+            isPremium
+              ? 'bg-blue-600 hover:bg-blue-700'
+              : 'bg-gray-400 cursor-not-allowed'
+          }`}
         >
           Calculate Distance
         </button>
