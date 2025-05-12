@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Learn from './Learn';
-import Projects from './Projects'; // Make sure this import is here
+import Projects from './Projects';
+import Login from './Login';
+import { AuthProvider, useAuth } from './AuthContext';
 
 // Fix Leaflet icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -36,7 +38,6 @@ const Home = () => (
       <h3 className="text-xl font-semibold">Explore a Map</h3>
       <Map />
     </div>
-    {/* Created By Section */}
     <div className="mb-4">
       <p className="text-lg">
         Created By:{' '}
@@ -50,7 +51,6 @@ const Home = () => (
         </a>
       </p>
     </div>
-    {/* About Me Section */}
     <div className="mb-4">
       <h3 className="text-xl font-semibold mb-2">About Me</h3>
       <p className="text-lg">
@@ -60,28 +60,89 @@ const Home = () => (
   </div>
 );
 
-const App = () => (
-  <Router>
-    <div>
-      <nav className="bg-blue-600 p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-white text-2xl font-bold">HaritaHive</h1>
-          <ul className="flex space-x-4">
-            <li><Link to="/" className="text-white hover:text-gray-200">Home</Link></li>
-            <li><Link to="/learn" className="text-white hover:text-gray-200">Learn</Link></li>
-            <li><Link to="/projects" className="text-white hover:text-gray-200">Projects</Link></li>
-          </ul>
-        </div>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/learn" element={<Learn />} />
-        <Route path="/projects" element={<Projects />} /> {/* Make sure this route is here */}
-        {/* Optional: Add a catch-all route for unmatched paths */}
-        <Route path="*" element={<div className="container mx-auto p-4">Page Not Found</div>} />
-      </Routes>
-    </div>
-  </Router>
+// Component to protect routes
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="container mx-auto p-4">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
+};
+
+const App = () => {
+  const { user, logout } = useAuth();
+
+  return (
+    <Router>
+      <div>
+        <nav className="bg-blue-600 p-4">
+          <div className="container mx-auto flex justify-between items-center">
+            <h1 className="text-white text-2xl font-bold">HaritaHive</h1>
+            <ul className="flex space-x-4">
+              {user ? (
+                <>
+                  <li><Link to="/" className="text-white hover:text-gray-200">Home</Link></li>
+                  <li><Link to="/learn" className="text-white hover:text-gray-200">Learn</Link></li>
+                  <li><Link to="/projects" className="text-white hover:text-gray-200">Projects</Link></li>
+                  <li>
+                    <button
+                      onClick={logout}
+                      className="text-white hover:text-gray-200"
+                    >
+                      Log Out
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <li><Link to="/login" className="text-white hover:text-gray-200">Log In</Link></li>
+              )}
+            </ul>
+          </div>
+        </nav>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/learn"
+            element={
+              <ProtectedRoute>
+                <Learn />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
+
+// Wrap App with AuthProvider
+const AppWithAuth = () => (
+  <AuthProvider>
+    <App />
+  </AuthProvider>
 );
 
-export default App;
+export default AppWithAuth;
