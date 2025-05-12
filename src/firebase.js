@@ -2,25 +2,18 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAeYTvVpNDugkW1Pfz4xKueGkFRThtAEIQ",
-  authDomain: "haritahive.firebaseapp.com",
-  projectId: "haritahive",
-  storageBucket: "haritahive.firebasestorage.app",
-  messagingSenderId: "365988282284",
-  appId: "1:365988282284:web:e83555bc068a61ddfa8409",
-  measurementId: "G-7FCPW0HYP0"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: "haritahive-d2566.firebaseapp.com",
+  projectId: "haritahive-d2566",
+  storageBucket: "haritahive-d2566.firebasestorage.app",
+  messagingSenderId: "733504525231",
+  appId: "1:733504525231:web:02966c184374ab4e16d55a",
+  measurementId: "G-PBNM02R3GR"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Authentication
 const auth = getAuth(app);
-
-// Initialize Firestore
 const db = getFirestore(app);
 
-// Export auth and db for use in other files
 export { auth, db };
