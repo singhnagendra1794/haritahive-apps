@@ -1,14 +1,16 @@
+// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-// Your Firebase configuration from the Firebase console
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id"
+  apiKey: "AIzaSyAeYTvVpNDugkW1Pfz4xKueGkFRThtAEIQ",
+  authDomain: "haritahive.firebaseapp.com",
+  projectId: "haritahive",
+  storageBucket: "haritahive.firebasestorage.app",
+  messagingSenderId: "365988282284",
+  appId: "1:365988282284:web:e83555bc068a61ddfa8409",
+  measurementId: "G-7FCPW0HYP0"
 };
 
 // Initialize Firebase
@@ -17,4 +19,5 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication
 const auth = getAuth(app);
 
+// Export the auth object for use in other files
 export { auth };
